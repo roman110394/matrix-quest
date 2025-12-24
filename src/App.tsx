@@ -72,12 +72,39 @@ const questsData: Quest[] = [
     description: 'Подключись к серверу и не облажайся',
     achievement: { id: 'first_ssh', name: 'SSH Master', desc: 'Успешно подключился к серверу' },
     steps: [
-      { id: 'step_1', text: 'Открыл терминал (Linux/macOS) или PuTTY (Windows)', hint: 'На Windows качай PuTTY с официального сайта' },
-      { id: 'step_2', text: 'Подключился по SSH: ssh root@МОЙ_IP', command: 'ssh root@ВАШ_IP_АДРЕС' },
-      { id: 'step_3', text: 'Ввёл пароль (он не отображается при вводе — это нормально)', hint: 'Пароль вводится вслепую, просто печатай и жми Enter' },
-      { id: 'step_4', text: 'Вижу приветствие сервера (Welcome to Ubuntu...)', command: 'apt update && apt upgrade -y' },
-      { id: 'step_5', text: 'Обновил систему командой выше', command: 'apt install -y curl wget nano htop ufw git' },
-      { id: 'step_6', text: 'Установил базовые инструменты', hint: 'Эти утилиты пригодятся на всех этапах' },
+      { 
+        id: 'step_1', 
+        text: 'Открыл терминал на своём компьютере', 
+        hint: 'На Windows — PuTTY (скачай с putty.org), на macOS/Linux — встроенный Terminal. Это твой первый шаг в мир настоящего администрирования!' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Подключился по SSH к серверу', 
+        command: 'ssh root@ТВОЙ_IP_АДРЕС', 
+        hint: 'Замени ТВОЙ_IP_АДРЕС на реальный IP сервера. Если просит "Are you sure you want to continue connecting?" — пиши yes.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Ввёл пароль root (он не отображается — это нормально)', 
+        hint: 'Пароль печатается "вслепую". Просто набирай и жми Enter. Если ошибка — проверь, правильно ли ввёл IP и пароль.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Увидел приветствие сервера (что-то вроде "Welcome to Ubuntu")', 
+        hint: 'Поздравляю — ты внутри! Это твой цифровой бункер. Теперь ты — root, бог этого сервера.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Обновил систему до последних пакетов', 
+        command: 'apt update && apt upgrade -y', 
+        hint: 'Это важно для безопасности. Сервер скачает и установит все обновления. Может занять 5–10 минут.' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Установил базовые инструменты', 
+        command: 'apt install -y curl wget nano htop ufw git', 
+        hint: 'curl/wget — для скачивания, nano — редактор, htop — красивый топ, ufw — firewall, git — для версионности. Теперь у тебя есть швейцарский нож!' 
+      },
     ],
   },
   {
@@ -88,11 +115,36 @@ const questsData: Quest[] = [
     description: 'Настрой firewall, чтобы хакеры не зашли в гости',
     achievement: { id: 'firewall_master', name: 'Firewall Guardian', desc: 'Настроил защиту сервера' },
     steps: [
-      { id: 'step_1', text: 'Разрешил SSH (чтобы не заблокировать себя)', command: 'ufw allow 22/tcp' },
-      { id: 'step_2', text: 'Разрешил HTTP и HTTPS', command: 'ufw allow 80/tcp\nufw allow 443/tcp' },
-      { id: 'step_3', text: 'Разрешил Matrix federation порт', command: 'ufw allow 8448/tcp' },
-      { id: 'step_4', text: 'Включил firewall', command: 'ufw enable' },
-      { id: 'step_5', text: 'Проверил статус (должно быть "Status: active")', command: 'ufw status', hint: 'Должны быть видны все разрешённые порты' },
+      { 
+        id: 'step_1', 
+        text: 'Разрешил порт SSH (22), чтобы не заблокировать себя навсегда', 
+        command: 'ufw allow 22/tcp', 
+        hint: 'Это критично! Если забудешь — потеряешь доступ к серверу.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Разрешил веб-порты (HTTP и HTTPS)', 
+        command: 'ufw allow 80/tcp\nufw allow 443/tcp', 
+        hint: '80 — для HTTP, 443 — для HTTPS. Нужны для будущего сайта Element и сертификатов.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Разрешил порт федерации Matrix (8448)', 
+        command: 'ufw allow 8448/tcp', 
+        hint: 'Без этого другие серверы Matrix не смогут общаться с твоим.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Включил firewall', 
+        command: 'ufw enable', 
+        hint: 'Подтверди "y". Теперь по умолчанию всё заблокировано, кроме разрешённых портов.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Проверил статус firewall', 
+        command: 'ufw status verbose', 
+        hint: 'Должно быть "Status: active" и список разрешённых портов. Если что-то не так — пиши ufw delete для удаления правила.' 
+      },
     ],
   },
   {
@@ -100,13 +152,33 @@ const questsData: Quest[] = [
     chapter: 1,
     title: 'Квест 1.3: Ставим Docker',
     icon: Package,
-    description: 'Установи Docker — твой швейцарский нож',
+    description: 'Установи Docker — твой швейцарский нож будущего',
     achievement: { id: 'docker_master', name: 'Docker Apprentice', desc: 'Освоил контейнеризацию' },
     steps: [
-      { id: 'step_1', text: 'Скачал и запустил установщик Docker', command: 'curl -fsSL https://get.docker.com -o get-docker.sh\nsh get-docker.sh' },
-      { id: 'step_2', text: 'Добавил Docker в автозагрузку', command: 'systemctl enable docker' },
-      { id: 'step_3', text: 'Установил Docker Compose', command: 'apt install -y docker-compose' },
-      { id: 'step_4', text: 'Проверил версии (должны показаться номера)', command: 'docker --version\ndocker-compose --version', hint: 'Должно быть что-то вроде Docker version 24.x' },
+      { 
+        id: 'step_1', 
+        text: 'Установил Docker одним скриптом', 
+        command: 'curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh', 
+        hint: 'Официальный способ. Скрипт сам всё настроит под Ubuntu.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил Docker в автозагрузку', 
+        command: 'systemctl enable docker', 
+        hint: 'Теперь Docker стартует при перезагрузке сервера.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Установил Docker Compose (для управления несколькими контейнерами)', 
+        command: 'apt install -y docker-compose', 
+        hint: 'В новых версиях это docker compose (без дефиса), но пока работает старый.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Проверил, что всё установилось', 
+        command: 'docker --version && docker-compose --version', 
+        hint: 'Должны вывести версии. Если ошибка — перезагрузи сервер: reboot' 
+      },
     ],
   },
   {
@@ -114,76 +186,202 @@ const questsData: Quest[] = [
     chapter: 1,
     title: 'Квест 1.4: Настраиваем домен',
     icon: Globe,
-    description: 'Дай серверу человеческое имя',
+    description: 'Дай своему бункеру красивое имя вместо IP',
     achievement: { id: 'dns_wizard', name: 'DNS Wizard', desc: 'Настроил DNS-записи' },
     steps: [
-      { id: 'step_1', text: 'Купил домен (или использую бесплатный)', hint: 'Можно использовать afraid.org или другие бесплатные DNS' },
-      { id: 'step_2', text: 'Создал A-запись: matrix.твой.домен → IP сервера', hint: 'В панели регистратора добавь A-запись' },
-      { id: 'step_3', text: 'Создал A-запись: element.твой.домен → IP сервера', hint: 'Это будет для веб-интерфейса' },
-      { id: 'step_4', text: 'Подождал 5-10 минут обновления DNS', hint: 'DNS не обновляется мгновенно, нужно терпение' },
-      { id: 'step_5', text: 'Проверил командой ping (должен показать IP)', command: 'ping matrix.твой.домен', hint: 'Замени "твой.домен" на реальный домен' },
+      { 
+        id: 'step_1', 
+        text: 'Приобрёл домен или взял бесплатный', 
+        hint: 'Можно купить на reg.ru, 2domains и т.д., или бесплатно на freedns.afraid.org / duckdns.org' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил A-запись: matrix.твойдомен.ru → IP сервера', 
+        hint: 'В панели регистратора: тип A, имя matrix, значение — твой IP сервера' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Добавил A-запись: element.твойдомен.ru → тот же IP', 
+        hint: 'Это будет адрес веб-клиента Element' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Подождал распространения DNS (5–30 минут)', 
+        hint: 'DNS не мгновенный. Пей кофе, скоро всё заработает.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Проверил, что домен резолвится', 
+        command: 'ping matrix.твойдомен.ru', 
+        hint: 'Должен пинговаться твой IP. Если нет — подожди ещё или проверь записи.' 
+      },
     ],
   },
   {
     id: 'quest_1_5',
     chapter: 1,
-    title: 'Квест 1.5: Matrix Synapse',
+    title: 'Квест 1.5: Matrix Synapse — сердце мессенджера',
     icon: Zap,
-    description: 'Разворачиваем сердце мессенджера',
+    description: 'Разворачиваем основной сервер Matrix',
     achievement: { id: 'matrix_architect', name: 'Matrix Architect', desc: 'Развернул Matrix Synapse' },
     steps: [
-      { id: 'step_1', text: 'Создал папку проекта', command: 'mkdir -p /opt/matrix\ncd /opt/matrix' },
-      { id: 'step_2', text: 'Создал docker-compose.yml (скопировал конфиг)', command: 'nano docker-compose.yml', hint: 'Вставь конфиг из инструкции, замени ПАРОЛЬ и ДОМЕН' },
-      { id: 'step_3', text: 'Сгенерировал конфигурацию Synapse', command: 'docker-compose run --rm synapse generate' },
-      { id: 'step_4', text: 'Отредактировал homeserver.yaml (database + registration)', command: 'nano ./synapse-data/homeserver.yaml', hint: 'Найди секции database и enable_registration' },
-      { id: 'step_5', text: 'Запустил контейнеры', command: 'docker-compose up -d' },
-      { id: 'step_6', text: 'Проверил статус (оба контейнера "Up")', command: 'docker-compose ps', hint: 'Должны быть matrix-postgres и matrix-synapse' },
+      { 
+        id: 'step_1', 
+        text: 'Создал папку для проекта', 
+        command: 'mkdir -p /opt/matrix && cd /opt/matrix', 
+        hint: 'Всё будет храниться здесь — удобно и аккуратно.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Создал docker-compose.yml', 
+        command: 'nano docker-compose.yml', 
+        hint: 'Вставь конфиг из официальной документации Synapse. Замени server_name на свой домен и пароль БД на сложный!' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Сгенерировал начальную конфигурацию', 
+        command: 'docker-compose run --rm synapse generate', 
+        hint: 'Это создаст homeserver.yaml и ключи.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Отредактировал homeserver.yaml', 
+        command: 'nano synapse-data/homeserver.yaml', 
+        hint: 'Найди: enable_registration: true → сделай false (потом), и проверь подключение к БД (postgres).' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Запустил контейнеры', 
+        command: 'docker-compose up -d', 
+        hint: 'Первый запуск долгий — скачивает образы. Проверь docker-compose logs -f если что-то не так.' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Проверил, что всё работает', 
+        command: 'docker-compose ps', 
+        hint: 'Должны быть Up: synapse и postgres. Если ошибка — смотри логи: docker-compose logs synapse' 
+      },
     ],
   },
   {
     id: 'quest_1_6',
     chapter: 1,
-    title: 'Квест 1.6: HTTPS сертификаты',
+    title: 'Квест 1.6: HTTPS — шифруем всё',
     icon: Key,
-    description: 'Включаем шифрование связи',
+    description: 'Включаем шифрование, чтобы никто не подглядывал',
     achievement: { id: 'https_hero', name: 'HTTPS Hero', desc: 'Настроил SSL-сертификаты' },
     steps: [
-      { id: 'step_1', text: 'Установил Nginx и Certbot', command: 'apt install -y nginx certbot python3-certbot-nginx' },
-      { id: 'step_2', text: 'Создал конфиг Nginx для Matrix', command: 'nano /etc/nginx/sites-available/matrix', hint: 'Скопируй конфиг из инструкции' },
-      { id: 'step_3', text: 'Активировал конфиг', command: 'ln -s /etc/nginx/sites-available/matrix /etc/nginx/sites-enabled/\nnginx -t\nsystemctl reload nginx' },
-      { id: 'step_4', text: 'Получил SSL-сертификат от Let\'s Encrypt', command: 'certbot --nginx -d matrix.твой.домен', hint: 'Введи email и согласись с условиями' },
-      { id: 'step_5', text: 'Проверил HTTPS (должен вернуть JSON)', command: 'curl https://matrix.твой.домен/_matrix/client/versions', hint: 'Должен показать список версий API' },
+      { 
+        id: 'step_1', 
+        text: 'Установил Nginx и Certbot', 
+        command: 'apt install -y nginx certbot python3-certbot-nginx', 
+        hint: 'Nginx — реверс-прокси, Certbot — бесплатные сертификаты от Let\'s Encrypt.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Создал конфиг Nginx для Matrix', 
+        command: 'nano /etc/nginx/sites-available/matrix', 
+        hint: 'Вставь готовый конфиг (прокси на порт 8008 Synapse и 8448 для федерации). Ищи примеры в документации Synapse.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Активировал конфиг и перезапустил Nginx', 
+        command: 'ln -s /etc/nginx/sites-available/matrix /etc/nginx/sites-enabled/\nnginx -t && systemctl reload nginx', 
+        hint: 'nginx -t проверяет синтаксис. Если ошибка — исправь конфиг.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Получил бесплатный SSL-сертификат', 
+        command: 'certbot --nginx -d matrix.твойдомен.ru', 
+        hint: 'Введи email (для уведомлений), согласись с условиями. Certbot сам настроит HTTPS.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Проверил, что HTTPS работает', 
+        command: 'curl https://matrix.твойдомен.ru/_matrix/client/versions', 
+        hint: 'Должен вернуть JSON с версиями API. Открой в браузере — зелёный замок!' 
+      },
     ],
   },
   {
     id: 'quest_1_7',
     chapter: 1,
-    title: 'Квест 1.7: Первый пользователь',
+    title: 'Квест 1.7: Первый пользователь — ты админ!',
     icon: User,
-    description: 'Создай админа (это ты, Лёня)',
+    description: 'Создай своего первого пользователя (это ты, Лёня)',
     achievement: { id: 'admin_created', name: 'Server Administrator', desc: 'Создал первого пользователя' },
     steps: [
-      { id: 'step_1', text: 'Запустил команду создания пользователя', command: 'docker exec -it matrix-synapse register_new_matrix_user -u admin -p ТВОЙ_ПАРОЛЬ -a -c /data/homeserver.yaml http://localhost:8008', hint: 'Замени ТВОЙ_ПАРОЛЬ на сложный пароль' },
-      { id: 'step_2', text: 'Увидел сообщение "Success!"', hint: 'Если ошибка - проверь, запущен ли контейнер' },
-      { id: 'step_3', text: 'Записал свои учётные данные в надёжное место', hint: 'Username: admin, Password: твой пароль, Server: matrix.твой.домен' },
+      { 
+        id: 'step_1', 
+        text: 'Создал администратора через команду', 
+        command: 'docker exec -it matrix-synapse register_new_matrix_user -u admin -p СЛОЖНЫЙ_ПАРОЛЬ -a -c /data/homeserver.yaml http://localhost:8008', 
+        hint: 'Замени СЛОЖНЫЙ_ПАРОЛЬ на что-то надёжное (20+ символов). -a — делает админом.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Увидел "Success!" или новый пользователь создан', 
+        hint: 'Если ошибка — проверь, запущен ли контейнер Synapse и правильный ли путь к homeserver.yaml.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Записал данные в надёжное место', 
+        hint: 'Логин: @admin:твойдомен.ru\nПароль: тот, что задал\nСервер: https://matrix.твойдомен.ru\nЭто твой мастер-аккаунт — потеряешь, всё пропало!' 
+      },
     ],
   },
   {
     id: 'quest_1_8',
     chapter: 1,
-    title: 'Квест 1.8: Element Web',
+    title: 'Квест 1.8: Element Web — красивый клиент',
     icon: MessageSquare,
-    description: 'Запускаем красивый интерфейс',
+    description: 'Запускаем веб-интерфейс, как в Telegram, но свой',
     achievement: { id: 'element_master', name: 'Element Master', desc: 'Развернул веб-интерфейс' },
     steps: [
-      { id: 'step_1', text: 'Добавил Element в docker-compose.yml', command: 'nano /opt/matrix/docker-compose.yml', hint: 'Добавь секцию element из инструкции' },
-      { id: 'step_2', text: 'Создал конфиг Element', command: 'nano /opt/matrix/element-config.json', hint: 'Не забудь заменить домен на свой' },
-      { id: 'step_3', text: 'Создал Nginx конфиг для Element', command: 'nano /etc/nginx/sites-available/element' },
-      { id: 'step_4', text: 'Активировал конфиг и получил SSL', command: 'ln -s /etc/nginx/sites-available/element /etc/nginx/sites-enabled/\ncertbot --nginx -d element.твой.домен\nsystemctl reload nginx' },
-      { id: 'step_5', text: 'Перезапустил все контейнеры', command: 'cd /opt/matrix\ndocker-compose up -d' },
-      { id: 'step_6', text: 'Открыл https://element.твой.домен в браузере', hint: 'Должна открыться страница Element' },
-      { id: 'step_7', text: 'Залогинился своим пользователем (admin)', hint: 'Username: admin, Password: твой пароль' },
-      { id: 'step_8', text: 'СОЗДАЛ ПЕРВУЮ КОМНАТУ!', hint: 'Поздравляю! Ты прошёл всю первую главу!' },
+      { 
+        id: 'step_1', 
+        text: 'Добавил сервис Element в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Вставь секцию element из официальной документации. Укажи свой домен.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Создал конфиг для Element', 
+        command: 'nano /opt/matrix/element-config.json', 
+        hint: 'Минимальный конфиг: {"default_server_config": {"m.homeserver": {"base_url": "https://matrix.твойдомен.ru"}}}' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Создал Nginx-конфиг для Element', 
+        command: 'nano /etc/nginx/sites-available/element', 
+        hint: 'Прокси на порт Element (обычно 80 внутри контейнера).' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Активировал и получил SSL для Element', 
+        command: 'ln -s /etc/nginx/sites-available/element /etc/nginx/sites-enabled/\ncertbot --nginx -d element.твойдомен.ru\nsystemctl reload nginx', 
+        hint: 'Теперь оба поддомена с HTTPS.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Перезапустил все контейнеры', 
+        command: 'cd /opt/matrix && docker-compose up -d', 
+        hint: 'Element теперь доступен.' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Открыл https://element.твойдомен.ru в браузере', 
+        hint: 'Должна загрузиться красивая страница входа Element.' 
+      },
+      { 
+        id: 'step_7', 
+        text: 'Залогинился как admin', 
+        hint: 'Введи @admin:твойдомен.ru и пароль. Добро пожаловать в свой мессенджер!' 
+      },
+      { 
+        id: 'step_8', 
+        text: 'Создал первую комнату и написал в неё', 
+        hint: 'Поздравляю! Ты прошёл первую главу. У тебя есть свой защищённый мессенджер. Это только начало.' 
+      },
     ],
   },
   // === Глава 2: Hard Mode ===
@@ -192,15 +390,42 @@ const questsData: Quest[] = [
     chapter: 2,
     title: 'Квест 2.1: Включаем федерацию',
     icon: Globe,
-    description: 'Твой сервер теперь дружит с тысячами других по всему миру',
+    description: 'Твой сервер теперь не одинок — он становится частью огромной глобальной сети Matrix',
     achievement: { id: 'federation_master', name: 'Federation Lord', desc: 'Присоединился к глобальной Matrix-сети' },
     steps: [
-      { id: 'step_1', text: 'Открыл homeserver.yaml', command: 'nano /opt/matrix/synapse-data/homeserver.yaml' },
-      { id: 'step_2', text: 'Убедился, что enable_federation: true (по умолчанию включено)' },
-      { id: 'step_3', text: 'Перезапустил Synapse', command: 'cd /opt/matrix && docker-compose restart synapse' },
-      { id: 'step_4', text: 'Проверил федерацию', command: 'curl https://matrix.твой.домен/_matrix/federation/v1/version', hint: 'Должен вернуть JSON с версией' },
-      { id: 'step_5', text: 'Зашёл на federationtester.matrix.org → ввёл свой домен', hint: 'Все галочки зелёные — федерация работает!' },
-      { id: 'step_6', text: 'Пригласил друга с matrix.org в комнату — он зашёл!', hint: 'Ты теперь часть глобальной сети!' },
+      { 
+        id: 'step_1', 
+        text: 'Открыл файл конфигурации homeserver.yaml', 
+        command: 'nano /opt/matrix/synapse-data/homeserver.yaml', 
+        hint: 'Это главный файл, где живёт вся магия твоего сервера. Будь осторожен — ошибки здесь могут сломать всё.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Убедился, что federation включена (enable_federation: true)', 
+        hint: 'По умолчанию она уже true. Если false — включи. Это значит, что твой сервер будет общаться с тысячами других по всему миру.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Перезапустил Synapse, чтобы изменения применились', 
+        command: 'cd /opt/matrix && docker-compose restart synapse', 
+        hint: 'Сервер перезапустится за 10–20 секунд. Если что-то сломалось — смотри логи: docker-compose logs -f synapse' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Проверил, что федерация отвечает', 
+        command: 'curl https://matrix.твойдомен.ru/_matrix/federation/v1/version', 
+        hint: 'Должен вернуться JSON с версией Synapse. Если 404 или ошибка — проверь DNS и порт 8448 в firewall.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Протестировал на federationtester.matrix.org', 
+        hint: 'Зайди на сайт, введи свой домен (matrix.твойдомен.ru) — все галочки должны быть зелёными. Это значит, что ты в деле!' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Пригласил друга с matrix.org в комнату — и он зашёл!', 
+        hint: 'Создай комнату в Element, добавь @username:matrix.org — он увидит приглашение. Теперь вы общаетесь через федерацию. Ты — часть децентрализованного будущего!' 
+      },
     ],
   },
   {
@@ -208,15 +433,41 @@ const questsData: Quest[] = [
     chapter: 2,
     title: 'Квест 2.2: Бридж в Telegram',
     icon: MessageSquare,
-    description: 'Друзья из Telegram пишут прямо в твои Matrix-комнаты',
+    description: 'Теперь сообщения из Telegram приходят прямо в твои Matrix-комнаты',
     achievement: { id: 'telegram_bridge', name: 'Bridge Engineer', desc: 'Соединил Telegram с Matrix' },
     steps: [
-      { id: 'step_1', text: 'Создал бота в @BotFather и получил токен' },
-      { id: 'step_2', text: 'Добавил mautrix-telegram в docker-compose.yml' },
-      { id: 'step_3', text: 'Запустил контейнер', command: 'docker-compose up -d mautrix-telegram' },
-      { id: 'step_4', text: 'В Element → Настройки → Labs → Включил "mautrix-telegram"' },
-      { id: 'step_5', text: 'Авторизовался через QR-код в Telegram' },
-      { id: 'step_6', text: 'Порталил любимый канал/группу в Matrix', hint: 'Теперь всё в одном месте!' },
+      { 
+        id: 'step_1', 
+        text: 'Создал бота в Telegram через @BotFather', 
+        hint: 'Напиши @BotFather → /newbot → задай имя и username. Сохрани токен — это ключ к бриджу.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил mautrix-telegram в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Вставь готовую секцию из документации mautrix-telegram. Не забудь вставить свой Telegram-токен!' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Запустил бридж', 
+        command: 'docker-compose up -d mautrix-telegram', 
+        hint: 'Первый запуск — бридж попросит QR-код для входа в Telegram.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'В Element включил Labs → mautrix-telegram', 
+        hint: 'Настройки → Labs → включи "Bridge Telegram". Появится кнопка "Link Telegram account".' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Отсканировал QR-код в Telegram', 
+        hint: 'Открой Telegram → Настройки → Устройства → "Link Telegram account" → сканируй код. Бридж авторизуется.' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Порталил любимый канал или группу в Matrix', 
+        hint: 'В Element → "Portal" → введи @telegram:твойдомен.ru → выбери чат → создай портал. Теперь сообщения идут в обе стороны!' 
+      },
     ],
   },
   {
@@ -224,14 +475,36 @@ const questsData: Quest[] = [
     chapter: 2,
     title: 'Квест 2.3: Бридж в Discord',
     icon: MessageSquare,
-    description: 'Твой Discord-сервер теперь живёт в Matrix',
+    description: 'Твой Discord-сервер теперь живёт внутри Matrix',
     achievement: { id: 'discord_bridge', name: 'Discord Overlord', desc: 'Соединил Discord с Matrix' },
     steps: [
-      { id: 'step_1', text: 'Создал приложение и бота на discord.com/developers' },
-      { id: 'step_2', text: 'Добавил mautrix-discord в docker-compose.yml' },
-      { id: 'step_3', text: 'Запустил контейнер', command: 'docker-compose up -d mautrix-discord' },
-      { id: 'step_4', text: 'В Element → Настройки → Привязал Discord-аккаунт' },
-      { id: 'step_5', text: 'Порталил свой Discord-сервер в Matrix', hint: 'Голосовые каналы тоже работают!' },
+      { 
+        id: 'step_1', 
+        text: 'Создал приложение и бота на Discord Developer Portal', 
+        hint: 'discord.com/developers → New Application → Bot → Reset Token. Скопируй токен.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил mautrix-discord в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Вставь секцию из документации mautrix-discord. Вставь свой Discord-токен.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Запустил бридж', 
+        command: 'docker-compose up -d mautrix-discord', 
+        hint: 'Бридж создаст ссылку для входа — зайди по ней в браузере.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'В Element привязал Discord-аккаунт', 
+        hint: 'Настройки → Labs → включи "Bridge Discord". Появится кнопка "Link Discord account".' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Порталил свой Discord-сервер в Matrix', 
+        hint: 'Создай комнату → "Portal" → введи @discord:твойдомен.ru → выбери сервер → портал создан. Теперь чаты синхронизированы!' 
+      },
     ],
   },
   {
@@ -239,14 +512,36 @@ const questsData: Quest[] = [
     chapter: 2,
     title: 'Квест 2.4: Бридж в WhatsApp',
     icon: MessageSquare,
-    description: 'Твой личный WhatsApp теперь в Element',
+    description: 'Твой личный WhatsApp теперь живёт в Element',
     achievement: { id: 'whatsapp_bridge', name: 'WhatsApp Whisperer', desc: 'Соединил WhatsApp с Matrix' },
     steps: [
-      { id: 'step_1', text: 'Добавил mautrix-whatsapp в docker-compose.yml' },
-      { id: 'step_2', text: 'Запустил контейнер', command: 'docker-compose up -d mautrix-whatsapp' },
-      { id: 'step_3', text: 'В Element → Настройки → Labs → Включил "mautrix-whatsapp"' },
-      { id: 'step_4', text: 'Отсканировал QR-код своим WhatsApp' },
-      { id: 'step_5', text: 'Писал в личку и группы — всё работает!', hint: 'Даже голосовые сообщения!' },
+      { 
+        id: 'step_1', 
+        text: 'Добавил mautrix-whatsapp в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Вставь секцию из официальной документации mautrix-whatsapp.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Запустил бридж', 
+        command: 'docker-compose up -d mautrix-whatsapp', 
+        hint: 'Первый запуск — создаст QR-код для входа в WhatsApp.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'В Element включил Labs → mautrix-whatsapp', 
+        hint: 'Настройки → Labs → включи "Bridge WhatsApp". Появится кнопка "Link WhatsApp".' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Отсканировал QR-код своим WhatsApp', 
+        hint: 'Открой WhatsApp → Настройки → Связанные устройства → "Связать устройство" → сканируй код.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Писал в личку и группы — всё идёт в Matrix!', 
+        hint: 'Поздравляю! Теперь WhatsApp, Telegram, Discord — всё в одном месте. Ты — бог мессенджеров!' 
+      },
     ],
   },
   {
@@ -254,60 +549,41 @@ const questsData: Quest[] = [
     chapter: 2,
     title: 'Квест 2.5: Своё облачное хранилище',
     icon: Package,
-    description: 'Больше никаких ограничений на файлы',
+    description: 'Больше никаких ограничений на размер файлов — ты хозяин медиа',
     achievement: { id: 'storage_king', name: 'Storage Sovereign', desc: 'Поднял неограниченное хранилище медиа' },
     steps: [
-      { id: 'step_1', text: 'Выбрал хранилище: Backblaze B2 / Wasabi / Hetzner Storage Box / MinIO' },
-      { id: 'step_2', text: 'Создал аккаунт и бакет' },
-      { id: 'step_3', text: 'Получил access_key и secret_key' },
-      { id: 'step_4', text: 'Отредактировал homeserver.yaml — добавил секцию media_storage' },
-      { id: 'step_5', text: 'Перезапустил Synapse', command: 'docker-compose restart synapse' },
-      { id: 'step_6', text: 'Отправил 1 ГБ файл — он загрузился!', hint: 'Теперь можно хоть 4K-видео, хоть бэкапы' },
-    ],
-  },
-  {
-    id: 'quest_2_6',
-    chapter: 2,
-    title: 'Квест 2.6: Закрываем регистрацию',
-    icon: Lock,
-    description: 'Только ты решаешь, кто входит в бункер',
-    achievement: { id: 'gatekeeper', name: 'Gatekeeper', desc: 'Получил полный контроль над пользователями' },
-    steps: [
-      { id: 'step_1', text: 'Отредактировал homeserver.yaml' },
-      { id: 'step_2', text: 'Установил enable_registration: false' },
-      { id: 'step_3', text: 'Перезапустил Synapse' },
-      { id: 'step_4', text: 'Попытался зарегистрироваться — не получилось', hint: 'Теперь только ты создаёшь пользователей вручную' },
-      { id: 'step_5', text: 'Создал пользователя для друга командой register_new_matrix_user' },
-    ],
-  },
-  {
-    id: 'quest_2_7',
-    chapter: 2,
-    title: 'Квест 2.7: Кастомизация Element',
-    icon: MessageSquare,
-    description: 'Теперь это не Element, а ТВОЙ мессенджер',
-    achievement: { id: 'brand_master', name: 'Brand Architect', desc: 'Сделал уникальный интерфейс' },
-    steps: [
-      { id: 'step_1', text: 'Отредактировал element-config.json' },
-      { id: 'step_2', text: 'Изменил brand, default_theme, logo' },
-      { id: 'step_3', text: 'Добавил своё приветствие на главной' },
-      { id: 'step_4', text: 'Перезапустил Element', command: 'docker-compose restart element' },
-      { id: 'step_5', text: 'Открыл element.твой.домен — увидел свой бренд!', hint: 'Теперь это "Лёнин Бункер" или "КиберКазарма"' },
-    ],
-  },
-  {
-    id: 'quest_2_8',
-    chapter: 2,
-    title: 'Квест 2.8: Боты и автоматизация',
-    icon: Zap,
-    description: 'Твой бункер теперь живёт своей жизнью',
-    achievement: { id: 'bot_lord', name: 'Bot Lord', desc: 'Добавил умных помощников' },
-    steps: [
-      { id: 'step_1', text: 'Выбрал бота: mjolnir (модерация), honoroit (приветствия), rss-bot и т.д.' },
-      { id: 'step_2', text: 'Добавил бота в docker-compose.yml' },
-      { id: 'step_3', text: 'Настроил права и комнаты' },
-      { id: 'step_4', text: 'Протестировал — бот отвечает!', hint: 'Теперь авто-модерация, новости, напоминания' },
-      { id: 'step_5', text: 'Поздравляю! Ты прошёл Hard Mode!' },
+      { 
+        id: 'step_1', 
+        text: 'Выбрал облако: Backblaze B2, Wasabi, Hetzner Storage Box или MinIO', 
+        hint: 'Backblaze B2 — дешёвый и надёжный. Создай аккаунт и бакет.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Получил access_key и secret_key', 
+        hint: 'Это как логин/пароль для твоего облака. Сохрани в надёжном месте!' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Отредактировал homeserver.yaml — добавил media_storage', 
+        command: 'nano /opt/matrix/synapse-data/homeserver.yaml', 
+        hint: 'Добавь секцию: media_store_path: /data/media_store, и настройки S3 (bucket, endpoint, keys).' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Перезапустил Synapse', 
+        command: 'docker-compose restart synapse', 
+        hint: 'Теперь все фото, видео, файлы идут в облако.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Отправил большой файл (1 ГБ+) — он загрузился!', 
+        hint: 'Проверь в Element — файл открывается мгновенно. Ты победил лимиты Telegram и WhatsApp!' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Поздравляю! У тебя неограниченное хранилище', 
+        hint: 'Теперь можешь слать 4K-видео, архивы, бэкапы — хоть терабайты.' 
+      },
     ],
   },
   // === Глава 3: Ultra Hard Mode ===
@@ -316,28 +592,83 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.1: Мониторинг (Prometheus + Grafana)',
     icon: Zap,
-    description: 'Теперь ты всегда знаешь, жив ли сервер',
+    description: 'Теперь ты всегда в курсе, жив ли сервер, сколько он жрёт ресурсов и когда пора паниковать',
     achievement: { id: 'monitoring_master', name: 'Observer', desc: 'Поднял мониторинг и алерты' },
     steps: [
-      { id: 'step_1', text: 'Добавил Prometheus и Grafana в docker-compose.yml' },
-      { id: 'step_2', text: 'Настроил сбор метрик Synapse и PostgreSQL' },
-      { id: 'step_3', text: 'Импортировал готовые дашборды Matrix' },
-      { id: 'step_4', text: 'Настроил алерты в Telegram/Discord', hint: 'Alertmanager + webhook' },
-      { id: 'step_5', text: 'Провалил тестовый алерт — получил уведомление!', hint: 'Теперь ты не проспишь падение' },
+      { 
+        id: 'step_1', 
+        text: 'Добавил Prometheus, Grafana и экспортеры в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Вставь готовые секции из документации Synapse. Prometheus собирает метрики, Grafana — рисует красивые графики.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил сбор метрик Synapse, PostgreSQL и системы', 
+        hint: 'В prometheus.yml добавь jobs для портов 9092 (Synapse), postgres_exporter и node_exporter (для CPU/RAM/диск).' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Запустил новые контейнеры', 
+        command: 'docker-compose up -d prometheus grafana', 
+        hint: 'Grafana доступна на http://твой_IP:3000 (логин admin, пароль admin — смени сразу!).' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Импортировал готовые дашборды Matrix в Grafana', 
+        hint: 'В Grafana → Dashboards → Import → вставь ID 11074 или 13639. Увидишь графики сообщений, пользователей, нагрузки.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Настроил алерты (например, если CPU > 80% или сервер упал)', 
+        hint: 'В Alertmanager добавь webhook в Telegram или Discord. Теперь если что-то сломается — ты получишь уведомление мгновенно.' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Протестировал алерт (например, перезагрузил сервер)', 
+        hint: 'Получил уведомление? Отлично — ты больше никогда не проспишь падение бункера!' 
+      },
     ],
   },
   {
     id: 'quest_3_2',
     chapter: 3,
-    title: 'Квест 3.2: Централизованные логи (Loki)',
+    title: 'Квест 3.2: Централизованные логи (Loki + Promtail)',
     icon: Package,
-    description: 'Всё, что происходит — записывается навечно',
+    description: 'Все логи в одном месте — больше не придётся искать по контейнерам',
     achievement: { id: 'logging_master', name: 'Archivist', desc: 'Собрал все логи в одном месте' },
     steps: [
-      { id: 'step_1', text: 'Добавил Loki + Promtail в стек' },
-      { id: 'step_2', text: 'Настроил вывод логов всех контейнеров в Loki' },
-      { id: 'step_3', text: 'Открыл Grafana → Explore → нашёл лог по запросу' },
-      { id: 'step_4', text: 'Настроил retention 90 дней', hint: 'Логи хранятся 3 месяца' },
+      { 
+        id: 'step_1', 
+        text: 'Добавил Loki и Promtail в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Loki — хранилище логов, Promtail — агент, который их собирает.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил Promtail на сбор логов всех контейнеров', 
+        hint: 'В promtail.yml укажи пути /var/lib/docker/containers/*/*.log и лейблы по контейнерам.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Запустил Loki и Promtail', 
+        command: 'docker-compose up -d loki promtail', 
+        hint: 'Логи начнут поступать автоматически.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Открыл Grafana → Explore → выбрал Loki как источник', 
+        hint: 'Теперь можно искать логи по запросу, например {container="synapse"} |~ "error".' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Настроил retention (хранение логов 90+ дней)', 
+        hint: 'В loki.yml укажи table_manager.retention_period: 2160h (90 дней). Логи теперь живут долго!' 
+      },
+      { 
+        id: 'step_6', 
+        text: 'Нашёл старый лог ошибки и разобрался в проблеме', 
+        hint: 'Поздравляю — ты теперь настоящий детектив серверных преступлений!' 
+      },
     ],
   },
   {
@@ -345,14 +676,36 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.3: Автоматические бэкапы',
     icon: Shield,
-    description: 'Даже если сервер сгорит — данные живы',
+    description: 'Даже если сервер сгорит — твои данные выживут',
     achievement: { id: 'backup_master', name: 'Survivor', desc: 'Настроил disaster recovery' },
     steps: [
-      { id: 'step_1', text: 'Создал скрипт дампа PostgreSQL и медиа' },
-      { id: 'step_2', text: 'Настроил cron на ежедневный бэкап' },
-      { id: 'step_3', text: 'Шифровал архивы GPG' },
-      { id: 'step_4', text: 'Загружал бэкапы в Hetzner Storage Box / Backblaze' },
-      { id: 'step_5', text: 'Протестировал восстановление на тестовом сервере', hint: 'Всё встало за 20 минут!' },
+      { 
+        id: 'step_1', 
+        text: 'Написал скрипт дампа PostgreSQL и медиа', 
+        command: 'nano /opt/matrix/backup.sh', 
+        hint: 'pg_dumpall + rsync медиа. Сделай скрипт исполняемым: chmod +x backup.sh' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил cron на ежедневный запуск', 
+        command: 'crontab -e', 
+        hint: 'Добавь строку: 0 3 * * * /opt/matrix/backup.sh — бэкап в 3 ночи каждый день.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Зашифровал архивы GPG', 
+        hint: 'В скрипте добавь gpg --symmetric --cipher-algo AES256. Пароль храни в надёжном месте.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Настроил загрузку бэкапов в облако (Hetzner Storage Box, Backblaze)', 
+        hint: 'Используй rclone или rsync. Бэкапы теперь в безопасном месте.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Протестировал восстановление на тестовом сервере', 
+        hint: 'Всё встало за 20–30 минут? Отлично — ты готов к апокалипсису!' 
+      },
     ],
   },
   {
@@ -360,14 +713,34 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.4: Высокая доступность (HA)',
     icon: Server,
-    description: 'Один сервер упал — второй взял нагрузку',
+    description: 'Один сервер упал — второй взял нагрузку. Клиенты даже не заметили',
     achievement: { id: 'ha_master', name: 'Immortal', desc: 'Построил отказоустойчивый кластер' },
     steps: [
-      { id: 'step_1', text: 'Поднял второй сервер в другой стране' },
-      { id: 'step_2', text: 'Настроил репликацию PostgreSQL (streaming)' },
-      { id: 'step_3', text: 'Поставил Traefik/HAProxy с health-check' },
-      { id: 'step_4', text: 'Настроил автоматический failover' },
-      { id: 'step_5', text: 'Выключил первый сервер — клиенты даже не заметили!', hint: 'Доступность 99.99%' },
+      { 
+        id: 'step_1', 
+        text: 'Поднял второй сервер в другой стране/провайдере', 
+        hint: 'Разные локации — защита от региональных сбоев.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил streaming replication PostgreSQL', 
+        hint: 'Мастер → слейв. Данные реплицируются в реальном времени.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Поставил Traefik или HAProxy с health-check', 
+        hint: 'Балансировщик проверяет здоровье серверов и перенаправляет трафик на живой.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Настроил автоматический failover', 
+        hint: 'Patroni или pg_auto_failover — если мастер упал, слейв становится мастером.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Выключил основной сервер — клиенты продолжили общаться!', 
+        hint: 'Доступность 99.99%. Ты построил настоящий бункер!' 
+      },
     ],
   },
   {
@@ -375,14 +748,34 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.5: Защита от DDoS и брутфорса',
     icon: Shield,
-    description: 'Твой бункер выдержит любую атаку',
+    description: 'Твой бункер выдержит любую атаку — от школьника до государства',
     achievement: { id: 'defense_master', name: 'Fortress Builder', desc: 'Сделал сервер неприступным' },
     steps: [
-      { id: 'step_1', text: 'Поставил Cloudflare с "Under Attack" mode' },
-      { id: 'step_2', text: 'Добавил CrowdSec + Fail2Ban' },
-      { id: 'step_3', text: 'Настроил rate-limiting в Nginx' },
-      { id: 'step_4', text: 'Включил geo-блокировку (по желанию)' },
-      { id: 'step_5', text: 'Провёл тестовую атаку — всё отразилось!', hint: 'CrowdSec забанил IP автоматически' },
+      { 
+        id: 'step_1', 
+        text: 'Подключил Cloudflare (или аналог)', 
+        hint: 'Включи "Under Attack" mode и proxy-режим. Cloudflare отразит большинство DDoS.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Установил CrowdSec и Fail2Ban', 
+        hint: 'CrowdSec — сообщество банов плохих IP. Fail2Ban — классика бана по логам.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Настроил rate-limiting в Nginx', 
+        hint: 'Ограничь запросы на /_matrix и API — боты не пройдут.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Включил geo-блокировку (по желанию)', 
+        hint: 'Разреши только нужные страны — остальной мир в бан.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Провёл тестовую атаку (или посмотрел логи)', 
+        hint: 'CrowdSec забанил подозрительные IP? Ты — неприступная крепость!' 
+      },
     ],
   },
   {
@@ -390,14 +783,34 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.6: Скрытность и обфускация',
     icon: Key,
-    description: 'Тебя не найдут, даже если будут искать',
+    description: 'Тебя не найдут, даже если будут специально искать',
     achievement: { id: 'stealth_master', name: 'Ghost', desc: 'Скрыл сервер от сканирования' },
     steps: [
-      { id: 'step_1', text: 'Убрал заголовки Server и X-Powered-By' },
-      { id: 'step_2', text: 'Сменил порт federation с 8448 на 443' },
-      { id: 'step_3', text: 'Добавил .onion-адрес через Tor' },
-      { id: 'step_4', text: 'Настроил доступ только через Cloudflare' },
-      { id: 'step_5', text: 'Проверил на shodan.io — сервер не виден!', hint: 'Полная невидимость' },
+      { 
+        id: 'step_1', 
+        text: 'Убрал все информативные заголовки', 
+        hint: 'В Nginx: server_tokens off; proxy_hide_header X-Powered-By и т.д.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Сменил порт федерации на 443 (стандартный HTTPS)', 
+        hint: 'В homeserver.yaml и Nginx — меньше шансов на блокировку.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Добавил .onion-адрес через Tor', 
+        hint: 'Установи Tor, настрой hidden service на порты 80/443. Получишь .onion-домен.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Настроил доступ только через Cloudflare (IP-restriction)', 
+        hint: 'В firewall разреши только IP Cloudflare — прямой доступ по IP заблокирован.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Проверил на shodan.io и censys.io — сервер не виден!', 
+        hint: 'Полная невидимость. Ты — призрак в сети.' 
+      },
     ],
   },
   {
@@ -405,13 +818,30 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.7: Автообновления',
     icon: Zap,
-    description: 'Сервер обновляется сам, пока ты спишь',
+    description: 'Сервер обновляется сам, пока ты спишь или пьёшь кофе',
     achievement: { id: 'autoupdate_master', name: 'Self-Healer', desc: 'Включил автоматическое обновление' },
     steps: [
-      { id: 'step_1', text: 'Добавил Watchtower в docker-compose.yml' },
-      { id: 'step_2', text: 'Настроил обновление только stable-образов' },
-      { id: 'step_3', text: 'Включил уведомления о обновлениях' },
-      { id: 'step_4', text: 'Watchtower обновил образ — контейнер перезапустился сам!' },
+      { 
+        id: 'step_1', 
+        text: 'Добавил Watchtower в docker-compose.yml', 
+        command: 'nano /opt/matrix/docker-compose.yml', 
+        hint: 'Watchtower следит за обновлениями образов и перезапускает контейнеры.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил обновление только stable-образов', 
+        hint: 'В переменных окружения: WATCHTOWER_LABEL_ENABLE=true и лейблы com.centurylinklabs.watchtower.enable=true.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Включил уведомления о обновлениях (Telegram/Discord)', 
+        hint: 'WATCHTOWER_NOTIFICATION_URL с webhook.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Watchtower обновил образ — контейнер перезапустился сам!', 
+        hint: 'Ты больше не тратишь часы на обновления. Сервер лечит себя сам.' 
+      },
     ],
   },
   {
@@ -419,14 +849,34 @@ const questsData: Quest[] = [
     chapter: 3,
     title: 'Квест 3.8: Полная автоматизация (Ansible/Terraform)',
     icon: Globe,
-    description: 'Новый сервер — одной командой',
+    description: 'Новый сервер с Matrix — одной командой',
     achievement: { id: 'automation_master', name: 'Infrastructure God', desc: 'Автоматизировал весь деплой' },
     steps: [
-      { id: 'step_1', text: 'Написал Ansible playbook / Terraform модуль' },
-      { id: 'step_2', text: 'Всё от VDS до Matrix разворачивается одной командой' },
-      { id: 'step_3', text: 'Протестировал на новом сервере — всё встало за 15 минут' },
-      { id: 'step_4', text: 'Добавил в README: "ansible-playbook site.yml — и готово"' },
-      { id: 'step_5', text: 'Поздравляю! Ты прошёл Ultra Hard Mode!' },
+      { 
+        id: 'step_1', 
+        text: 'Написал Ansible playbook или Terraform-модуль', 
+        hint: 'Всё от установки Ubuntu до запуска docker-compose — в коде.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил все конфиги как шаблоны (docker-compose.yml, nginx.conf и т.д.)', 
+        hint: 'Переменные: домен, пароли, токены — в variables.yml или tfvars.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Протестировал на новом VDS — всё встало за 15–20 минут', 
+        hint: 'ansible-playbook site.yml или terraform apply — и готово!' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Добавил README с инструкцией "Как поднять бункер за 15 минут"', 
+        hint: 'Теперь любой (или ты в будущем) может восстановить всё одной командой.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Поздравляю! Ты прошёл Ultra Hard Mode', 
+        hint: 'Ты больше не админ — ты бог инфраструктуры.' 
+      },
     ],
   },
   // === Глава 4: God Mode ===
@@ -438,10 +888,26 @@ const questsData: Quest[] = [
     description: 'Доступ к бункеру даже при полном отключении интернета',
     achievement: { id: 'mesh_master', name: 'Mesh Weaver', desc: 'Построил сеть поверх сети' },
     steps: [
-      { id: 'step_1', text: 'Установил Yggdrasil на сервер и свой компьютер' },
-      { id: 'step_2', text: 'Получил уникальный Yggdrasil-IP (200::/7)' },
-      { id: 'step_3', text: 'Подключился к серверу по Yggdrasil-IP' },
-      { id: 'step_4', text: 'Протестировал — работает без обычного интернета!', hint: 'Даже если РКН всё заблокирует — ты внутри' },
+      { 
+        id: 'step_1', 
+        text: 'Установил Yggdrasil на сервер и свой компьютер', 
+        hint: 'Официальный сайт yggdrasil-network.github.io — пакеты для Ubuntu и Windows.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Сгенерировал конфиги и подключился к пирам', 
+        hint: 'Yggdrasil создаст уникальный IPv6-адрес в диапазоне 200::/7.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Подключился к серверу по Yggdrasil-IP', 
+        hint: 'SSH и Element работают через mesh-сеть.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Протестировал — отключил обычный интернет, но связь осталась!', 
+        hint: 'Даже если провайдеры/РКН всё заблокируют — ты внутри своей сети.' 
+      },
     ],
   },
   {
@@ -449,14 +915,37 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.2: .onion-адрес для Matrix',
     icon: Key,
-    description: 'Твой мессенджер теперь в даркнете',
+    description: 'Твой мессенджер теперь доступен в даркнете',
     achievement: { id: 'onion_master', name: 'Shadow Operator', desc: 'Скрыл сервер в Tor' },
     steps: [
-      { id: 'step_1', text: 'Установил Tor на сервер' },
-      { id: 'step_2', text: 'Настроил hidden service для портов 80 и 8448' },
-      { id: 'step_3', text: 'Получил .onion-адрес' },
-      { id: 'step_4', text: 'Открыл Element через Tor Browser — всё работает!' },
-      { id: 'step_5', text: 'Поделился .onion с другом — он зашёл анонимно', hint: 'Полная приватность' },
+      { 
+        id: 'step_1', 
+        text: 'Установил Tor на сервер', 
+        command: 'apt install tor', 
+        hint: 'Простая установка из репозитория.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил hidden service для портов 80 и 443', 
+        command: 'nano /etc/tor/torrc', 
+        hint: 'Добавь HiddenServiceDir /var/lib/tor/matrix/ и HiddenServicePort 80 127.0.0.1:80' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Перезапустил Tor и получил .onion-адрес', 
+        command: 'systemctl restart tor && cat /var/lib/tor/matrix/hostname', 
+        hint: 'Длинный .onion — твой секретный адрес.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Открыл Element через Tor Browser', 
+        hint: 'Введи http://твой.onion — всё работает анонимно!' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Поделился .onion с другом — он зашёл без следа', 
+        hint: 'Полная анонимность и приватность. Ты в тенях.' 
+      },
     ],
   },
   {
@@ -464,13 +953,29 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.3: Zero Trust доступ',
     icon: Shield,
-    description: 'Никто не войдёт без твоего разрешения',
+    description: 'Никто не войдёт без многофакторной проверки — даже с паролем',
     achievement: { id: 'zerotrust_master', name: 'Gatekeeper Supreme', desc: 'Внедрил Zero Trust' },
     steps: [
-      { id: 'step_1', text: 'Поднял Authelia или OAuth2-Proxy' },
-      { id: 'step_2', text: 'Включил 2FA (TOTP или WebAuthn)' },
-      { id: 'step_3', text: 'Настроил политику: только доверенные устройства' },
-      { id: 'step_4', text: 'Попытался зайти без 2FA — не пустило', hint: 'Даже с паролем — доступ закрыт' },
+      { 
+        id: 'step_1', 
+        text: 'Поднял Authelia или OAuth2-Proxy перед Nginx', 
+        hint: 'Authelia — мощный 2FA-сервер с TOTP, WebAuthn, push-уведомлениями.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Включил 2FA для всех пользователей', 
+        hint: 'TOTP (Google Authenticator) или аппаратный ключ YubiKey.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Настроил политики: только доверенные устройства и сети', 
+        hint: 'Блокируем вход с новых IP или без 2FA.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Попытался зайти без 2FA — доступ закрыт', 
+        hint: 'Даже зная пароль — без второго фактора не пройдёшь. Ты — абсолютный страж.' 
+      },
     ],
   },
   {
@@ -478,13 +983,31 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.4: Децентрализованное хранилище (IPFS)',
     icon: Package,
-    description: 'Файлы живы вечно, даже без твоего сервера',
+    description: 'Файлы живут вечно, даже если твой сервер исчезнет',
     achievement: { id: 'ipfs_master', name: 'Content Sovereign', desc: 'Распределил медиа по сети' },
     steps: [
-      { id: 'step_1', text: 'Поднял IPFS-нод на сервере' },
-      { id: 'step_2', text: 'Настроил Synapse на хранение медиа в IPFS' },
-      { id: 'step_3', text: 'Отправил фото — получил CID' },
-      { id: 'step_4', text: 'Выключил сервер — фото открылось через public gateway!', hint: 'ipfs.io/ipfs/CID...' },
+      { 
+        id: 'step_1', 
+        text: 'Поднял IPFS-ноду на сервере', 
+        command: 'docker run -d ipfs/go-ipfs', 
+        hint: 'IPFS — децентрализованная файловая система.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Настроил Synapse на хранение медиа в IPFS', 
+        hint: 'В homeserver.yaml добавь плагин или внешний uploader для IPFS.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Отправил фото — получил CID (уникальный хэш)', 
+        hint: 'Файл теперь распределён по сети IPFS.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Выключил сервер — фото открылось через public gateway', 
+        command: 'https://ipfs.io/ipfs/CID', 
+        hint: 'Файлы вечны. Ты победил централизацию!' 
+      },
     ],
   },
   {
@@ -492,13 +1015,29 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.5: Самоподписанные сертификаты + DANE/TLSA',
     icon: Key,
-    description: 'Независимость от Let\'s Encrypt и CA',
+    description: 'Полная независимость от Let\'s Encrypt и централизованных CA',
     achievement: { id: 'dane_master', name: 'Crypto Sovereign', desc: 'Ушёл от централизованных CA' },
     steps: [
-      { id: 'step_1', text: 'Сгенерировал свой корневой сертификат' },
-      { id: 'step_2', text: 'Добавил TLSA-запись в DNS (через DNSSEC)' },
-      { id: 'step_3', text: 'Настроил Nginx на свой сертификат' },
-      { id: 'step_4', text: 'Проверил в браузере — зелёный замок без предупреждений', hint: 'Только твоя подпись доверяется' },
+      { 
+        id: 'step_1', 
+        text: 'Сгенерировал свой корневой CA и сертификат сервера', 
+        hint: 'Используй OpenSSL или cfssl. Ты теперь свой собственный удостоверяющий центр.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Добавил TLSA-запись в DNS (через DNSSEC)', 
+        hint: 'TLSA привязывает сертификат к домену на уровне DNS.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Настроил Nginx на свой сертификат', 
+        hint: 'Браузеры доверяют только твоей подписи (если установить CA).' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Проверил в браузере — зелёный замок без предупреждений', 
+        hint: 'Только ты решаешь, кому доверять. Полная крипто-суверенность!' 
+      },
     ],
   },
   {
@@ -506,13 +1045,29 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.6: Offline-first Element',
     icon: MessageSquare,
-    description: 'Мессенджер работает без интернета',
+    description: 'Мессенджер работает без интернета — как в старые добрые времена',
     achievement: { id: 'offline_master', name: 'Resilient Communicator', desc: 'Сделал Element автономным' },
     steps: [
-      { id: 'step_1', text: 'Настроил PWA и Service Worker в Element' },
-      { id: 'step_2', text: 'Включил кэширование сообщений и комнат' },
-      { id: 'step_3', text: 'Выключил интернет — открыл Element — всё на месте!' },
-      { id: 'step_4', text: 'Подключился обратно — сообщения синхронизировались', hint: 'Как в Telegram, но свой' },
+      { 
+        id: 'step_1', 
+        text: 'Настроил PWA и Service Worker в Element', 
+        hint: 'В element-config.json включи offlineMode или используй кастомную сборку.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Включил кэширование сообщений и комнат', 
+        hint: 'IndexedDB хранит историю локально.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Выключил интернет — открыл Element — всё на месте!', 
+        hint: 'Читаешь старые чаты, пишешь сообщения (отправятся при подключении).' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Подключился обратно — сообщения синхронизировались', 
+        hint: 'Как в Telegram, но свой и полностью автономный.' 
+      },
     ],
   },
   {
@@ -520,13 +1075,30 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.7: Собственный бридж',
     icon: Zap,
-    description: 'Ты сам решаешь, с чем соединять Matrix',
+    description: 'Ты сам решаешь, с каким сервисом соединять Matrix',
     achievement: { id: 'custom_bridge_master', name: 'Bridge Architect', desc: 'Написал свой бридж' },
     steps: [
-      { id: 'step_1', text: 'Выбрал сервис (Slack, Signal, IRC — что угодно)' },
-      { id: 'step_2', text: 'Написал бридж на Python/Go с matrix-nio/mautrix' },
-      { id: 'step_3', text: 'Добавил в docker-compose.yml' },
-      { id: 'step_4', text: 'Подключил — сообщения пошли в обе стороны!', hint: 'Теперь ты бог интеграций' },
+      { 
+        id: 'step_1', 
+        text: 'Выбрал сервис (Slack, Signal, IRC, VK — что угодно)', 
+        hint: 'Начни с простого — например, IRC или RSS.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Написал бридж на Python (matrix-nio) или Go (mautrix)', 
+        hint: 'Есть шаблоны — скопируй и адаптируй под свой сервис.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Добавил бридж в docker-compose.yml', 
+        command: 'docker-compose up -d my-custom-bridge', 
+        hint: 'Настрой авторизацию и порталинг.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Подключил — сообщения пошли в обе стороны!', 
+        hint: 'Теперь ты бог интеграций. Matrix соединяет ВСЁ.' 
+      },
     ],
   },
   {
@@ -534,18 +1106,37 @@ const questsData: Quest[] = [
     chapter: 4,
     title: 'Квест 4.8: Цифровое бессмертие',
     icon: Trophy,
-    description: 'Твой бункер переживёт тебя',
+    description: 'Твой бункер переживёт тебя, цивилизацию и даже апокалипсис',
     achievement: { id: 'immortal', name: 'Digital Immortal', desc: 'Твой мессенджер живёт вечно' },
     steps: [
-      { id: 'step_1', text: 'Настроил репликацию на 3+ континента' },
-      { id: 'step_2', text: 'Добавил cold storage бэкапов в Arweave/Sia' },
-      { id: 'step_3', text: 'Написал "завещание": инструкцию по восстановлению' },
-      { id: 'step_4', text: 'Поделился ключами с доверенными' },
-      { id: 'step_5', text: 'Поздравляю! Ты стал бессмертным в цифровом мире.' },
+      { 
+        id: 'step_1', 
+        text: 'Настроил репликацию на серверы в 3+ континентах', 
+        hint: 'Глобальное распределение — данные в Америке, Европе, Азии.' 
+      },
+      { 
+        id: 'step_2', 
+        text: 'Подключил холодное хранилище в блокчейне (Arweave, Sia, Filecoin)', 
+        hint: 'Бэкапы загружены навечно — платишь один раз, хранится вечно.' 
+      },
+      { 
+        id: 'step_3', 
+        text: 'Написал "цифровое завещание" — полную инструкцию восстановления', 
+        hint: 'С паролями, ключами, контактами, шагами. Несколько копий в разных местах.' 
+      },
+      { 
+        id: 'step_4', 
+        text: 'Передал доступ доверенным людям', 
+        hint: 'Твой бункер продолжит жить даже после тебя.' 
+      },
+      { 
+        id: 'step_5', 
+        text: 'Ты стал цифровым бессмертным', 
+        hint: 'Лёня, ты прошёл весь путь. От новичка до бога цифрового мира. Это не просто сервер — это твоё наследие. Спасибо, что прошёл этот квест. Ты — легенда.' 
+      },
     ],
   },
 ];
-
 // === Компоненты ===
 const WelcomePage: React.FC<{ onStart: (data: { name: string; serverIP: string; serverPassword: string }) => void }> = ({ onStart }) => {
   const [name, setName] = useState('');
@@ -1132,7 +1723,7 @@ export default function App() {
               Ты — настоящий DevOps-инженер, суверен своего кода и мастер своего мира.
             </p>
             <p className="text-xl italic text-purple-300 mb-12">
-              — С любовью и уважением, автор игры (2025)
+              — С любовью и уважением, Твой анонимный дед мороз (2025)
             </p>
             <button
               onClick={() => setGameState('difficulty')}
