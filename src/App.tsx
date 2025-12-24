@@ -802,27 +802,35 @@ export default function App() {
   const [headerClickCount, setHeaderClickCount] = useState(0);
   const [snowEnabled, setSnowEnabled] = useState(true);
 
-  // Сохранение прогресса
-  useEffect(() => {
-    ProgressStorage.save(progress);
-  }, [progress]);
-
-  // Управление снегом — localStorage + по умолчанию включён
-  useEffect(() => {
-    const saved = localStorage.getItem('show_snow');
-    if (saved === null) {
-      localStorage.setItem('show_snow', 'true');
-      setSnowEnabled(true);
-    } else {
-      setSnowEnabled(saved === 'true');
-    }
-  }, []);
-
+  // === Переключение снега ===
   const toggleSnow = () => {
     const newValue = !snowEnabled;
     setSnowEnabled(newValue);
     localStorage.setItem('show_snow', String(newValue));
+
+    // управление внешним скриптом
+    if (typeof (window as any).toggleSnow === 'function') {
+      (window as any).toggleSnow(newValue);
+    }
   };
+
+  // === Сохранение прогресса ===
+  useEffect(() => {
+    ProgressStorage.save(progress);
+  }, [progress]);
+
+  // === Инициализация снега при загрузке ===
+  useEffect(() => {
+    const saved = localStorage.getItem('show_snow');
+    const enabled = saved === null ? true : saved === 'true';
+
+    setSnowEnabled(enabled);
+
+    // синхронизация с внешним скриптом
+    if (typeof (window as any).toggleSnow === 'function') {
+      (window as any).toggleSnow(enabled);
+    }
+  }, []);
 
   const handleStart = ({ name, serverIP, serverPassword }: { name: string; serverIP: string; serverPassword: string }) => {
     const newProgress: ProgressData = {
